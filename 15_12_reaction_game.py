@@ -11,42 +11,38 @@ winner = 0
 ## Turn off light
 
 if GPIO.input(7) :
-    control1 = 1
-else :
     control1 = 0
+else :
+    control1 = 1
     
 if GPIO.input(11) :
-    control2 = 1
-else :
     control2 = 0
+else :
+    control2 = 1
     
 try:
     while True:
         btn1 = GPIO.input(7)
         btn2 = GPIO.input(11)
-        if control1 = 0 :
-            if btn1 = 1 :
+        if control1 == 0 :
+            if btn1 == 0 :
                 winner = 1
                 break
         else :
-            if btn1 = 0 :
-                control2 = 0 ## if button 1 is not pressed, assign control1 = 0
+            if btn1 == 1 :
+                control1 = 0 ## if button 1 is not pressed, assign control1 = 0
         
-        if control2 = 0 :
-            if btn2 = 1 :
+        if control2 == 0 :
+            if btn2 == 0 :
                 winner = 2
                 break
         else :
-            if btn2 = 0 :
+            if btn2 == 1 :
                 control2 = 0 ## if button 2 is not pressed, assign control2 = 0
-        
-        if reading :
-            print "on"
-        else : 
-            print "off"
+
 except KeyboardInterrupt:
     GPIO.cleanup()
 
 print winner
-sleep(5)
+time.sleep(5)
 GPIO.cleanup()
