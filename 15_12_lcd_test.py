@@ -21,7 +21,7 @@ DB6 = 38
 DB7 = 40
 GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
 
-def lcd_turn_on:
+def lcd_turn_on():
   GPIO.setup(RS, GPIO.OUT)
   GPIO.setup(RW, GPIO.OUT)
   GPIO.setup(E, GPIO.OUT)
@@ -34,22 +34,22 @@ def lcd_turn_on:
   GPIO.setup(DB6, GPIO.OUT)
   GPIO.setup(DB7, GPIO.OUT)
   
-  GPIO.OUTPUT(RS,False)
-  GPIO.OUTPUT(RW,False)
-  GPIO.OUTPUT(E,True)
-  GPIO.OUTPUT(DB0,True)
-  GPIO.OUTPUT(DB1,True)
-  GPIO.OUTPUT(DB2,True)
-  GPIO.OUTPUT(DB3,True)
+  GPIO.output(RS,False)
+  GPIO.output(RW,False)
+  GPIO.output(E,True)
+  GPIO.output(DB0,True)
+  GPIO.output(DB1,True)
+  GPIO.output(DB2,True)
+  GPIO.output(DB3,True)
   time.sleep(0.01)
-  GPIO.OUTPUT(E.False)
+  GPIO.output(E,False)
   time.sleep(0.01)
-  GPIO.OUTPUT(DB0,False)
-  GPIO.OUTPUT(DB1,False)
-  GPIO.OUTPUT(DB2,False)
-  GPIO.OUTPUT(DB3,False)
+  GPIO.output(DB0,False)
+  GPIO.output(DB1,False)
+  GPIO.output(DB2,False)
+  GPIO.output(DB3,False)
   
-def lcd_turn_off:
+def lcd_turn_off():
   GPIO.setup(RS, GPIO.OUT)
   GPIO.setup(RW, GPIO.OUT)
   GPIO.setup(E, GPIO.OUT)
@@ -62,17 +62,17 @@ def lcd_turn_off:
   GPIO.setup(DB6, GPIO.OUT)
   GPIO.setup(DB7, GPIO.OUT)
   
-  GPIO.OUTPUT(RS,False)
-  GPIO.OUTPUT(RW,False)
-  GPIO.OUTPUT(E,True)
-  GPIO.OUTPUT(DB0,False)
-  GPIO.OUTPUT(DB1,False)
-  GPIO.OUTPUT(DB2,False)
-  GPIO.OUTPUT(DB3,True)
+  GPIO.output(RS,False)
+  GPIO.output(RW,False)
+  GPIO.output(E,True)
+  GPIO.output(DB0,False)
+  GPIO.output(DB1,False)
+  GPIO.output(DB2,False)
+  GPIO.output(DB3,True)
   time.sleep(0.01)
-  GPIO.OUTPUT(E.False)
+  GPIO.output(E,False)
   time.sleep(0.01)
-  GPIO.OUTPUT(DB3,False)
+  GPIO.output(DB3,False)
 
 lcd_turn_on()
 time.sleep(3)
