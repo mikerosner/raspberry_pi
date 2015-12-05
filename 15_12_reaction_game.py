@@ -2,13 +2,17 @@ import RPi.GPIO as GPIO ## Import GPIO library
 import time
 import random
 
-red_led = 0
-ylw_led = 0
-grn_led = 0
+red_led = 12
+ylw_led = 13
+grn_led = 15
 ply_1 = 7
 ply_2 = 11
 
 GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
+GPIO.setup(red_led, GPIO.OUT)
+GPIO.setup(ylw_led, GPIO.OUT)
+GPIO.setup(grn_led, GPIO.OUT)
+ 
 GPIO.setup(ply_1, GPIO.IN) ## Setup GPIO Pin 7 to IN
 GPIO.setup(ply_2, GPIO.IN) ## Setup GPIO Pin 11 to IN
 winner = 0
@@ -59,6 +63,6 @@ except KeyboardInterrupt:
     GPIO.cleanup()
 
 GPIO.output(grn_led,False)
-print "Player # " + winner + " is the winner!"
+print "Player # " + str(winner) + " is the winner!"
 time.sleep(5)
 GPIO.cleanup()
