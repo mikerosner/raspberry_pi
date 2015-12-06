@@ -1,6 +1,9 @@
 import RPi.GPIO as GPIO ## Import GPIO library
 import time
 import random
+import lcd_class
+
+lcd = lcd_class.lcd_data()
 
 red_led = 12
 ylw_led = 13
@@ -85,11 +88,66 @@ def lcd_init():
 	GPIO.output(DB3,0)
 	GPIO.output(DB2,0)
 
-lcd_init()
-time.sleep(3)
-lcd_turn_on()
-time.sleep(3)
-lcd_turn_off()
+def lcd_load_db():
+	GPIO.output(DB0,lcd.b.db0)
+	GPIO.output(DB1,lcd.b.db1)
+	GPIO.output(DB2,lcd.b.db2)
+	GPIO.output(DB3,lcd.b.db3)
+	GPIO.output(DB4,lcd.b.db4)
+	GPIO.output(DB5,lcd.b.db5)
+	GPIO.output(DB6,lcd.b.db6)
+	GPIO.output(DB7,lcd.b.db7)
 
-time.sleep(5)
+def lcd_load_char():
+	lcd.asByte =0x241 ## 0x1001000001
+	GPIO.output(RS,1)
+	GPIO.output(RW,0)
+	time.sleep(0.04)
+	GPIO.output(E,1)
+	time.sleep(0.04)
+	lcd_load_db()
+	time.sleep(0.04)
+	GPIO.output(E,0)
+	time.sleep(0.04)
+	lcd.asByte = 0x000
+	lcd_load_db()
+
+def lcd_move_home():
+	lcd.asByte =0x002 ## 0x0000000010
+	GPIO.output(RS,0)
+	GPIO.output(RW,0)
+	time.sleep(0.04)
+	GPIO.output(E,1)
+	time.sleep(0.04)
+	lcd_load_db()
+	time.sleep(0.04)
+	GPIO.output(E,0)
+	time.sleep(0.04)
+	lcd.asByte = 0x000
+	lcd_load_db()
+
+def lcd_clear_disp():
+	lcd.asByte =0x001 ## 0x0000000010
+	GPIO.output(RS,0)
+	GPIO.output(RW,0)
+	time.sleep(0.04)
+	GPIO.output(E,1)
+	time.sleep(0.04)
+	lcd_load_db()
+	time.sleep(0.04)
+	GPIO.output(E,0)
+	time.sleep(0.04)
+	lcd.asByte = 0x000
+	lcd_load_db()
+
+lcd_init()
+time.sleep(2)
+lcd_turn_on()
+time.sleep(2)
+lcd_move_home()
+lcd_load_char()
+lcd_load_char()
+lcd_load_char()
+time.sleep(2)
+lcd_clear_disp()
 GPIO.cleanup()
