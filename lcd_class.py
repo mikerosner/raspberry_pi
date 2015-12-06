@@ -2,25 +2,25 @@ import RPi.GPIO as GPIO ## Import GPIO library
 import ctypes
 import time
 
-c_uint8 = ctypes.c_uint8
+c_uint16 = ctypes.c_uint16
 class lcd_data_bits( ctypes.LittleEndianStructure ):
   _fields_ = [
-    ("db0", c_uint8, 1 ),  # asByte & 512
-    ("db1", c_uint8, 1 ),  # asByte & 256
-    ("db2", c_uint8, 1 ),  # asByte & 128
-    ("db3", c_uint8, 1 ),  # asByte & 64
-    ("db4", c_uint8, 1 ),  # asByte & 32
-    ("db5", c_uint8, 1 ),  # asByte & 16
-    ("db6", c_uint8, 1 ),  # asByte & 8
-    ("db7", c_uint8, 1 ),  # asByte & 4
-    ("rw",  c_uint8, 1 ),  # asByte & 2
-    ("rs",  c_uint8, 1 ),  # asByte & 1
+    ("db0", c_uint16, 1 ),  # asByte & 
+    ("db1", c_uint16, 1 ),  # asByte & 
+    ("db2", c_uint16, 1 ),  # asByte & 
+    ("db3", c_uint16, 1 ),  # asByte &
+    ("db4", c_uint16, 1 ),  # asByte &
+    ("db5", c_uint16, 1 ),  # asByte &
+    ("db6", c_uint16, 1 ),  # asByte & 
+    ("db7", c_uint16, 1 ),  # asByte & 
+    ("rw",  c_uint16, 1 ),  # asByte & 
+    ("rs",  c_uint16, 1 ),  # asByte & 
   ]
   
 class lcd_data( ctypes.Union ):
   _fields_ = [
     ("b",      lcd_data_bits ),
-    ("asByte", c_uint8    )
+    ("asByte", c_uint16    )
   ]
   
   RS = 24
@@ -35,7 +35,7 @@ class lcd_data( ctypes.Union ):
   DB6 = 38
   DB7 = 40
   
-  def lcd_load_db():
+  def lcd_load_db(self):
   	GPIO.output(self.DB0,self.b.db0)
   	GPIO.output(self.DB1,self.b.db1)
   	GPIO.output(self.DB2,self.b.db2)
@@ -44,56 +44,66 @@ class lcd_data( ctypes.Union ):
   	GPIO.output(self.DB5,self.b.db5)
   	GPIO.output(self.DB6,self.b.db6)
   	GPIO.output(self.DB7,self.b.db7)
-  	
-  def write_cmd():
+  
+
+  def printvars(self):
+	print str(self.b.rs) + str(self.b.rw) + str(self.b.db7) + str(self.b.db6) + str(self.b.db5) + str(self.b.db4) + str(self.b.db3) + str(self.b.db2) + str(self.b.db1) + str(self.b.db0)
+
+  def write_cmd(self):
     GPIO.output(self.RS,self.b.rs)
     GPIO.output(self.RW,self.b.rw)
+    ##time.sleep(0.01)
     GPIO.output(self.E,1)
+    ##time.sleep(0.01)
     self.lcd_load_db()
+    ##time.sleep(0.01)
     GPIO.output(self.E,0)
-    sleep(0.001)
+    time.sleep(0.001)
+    ##self.printvars()
   
-  def clear_dsp()
+  def clear_dsp(self):
     self.asByte=0x001
     self.write_cmd()
     
-  def rtrn_hme()
+  def rtrn_hme(self):
     self.asByte=0x002
     self.write_cmd()
     
-  def funct_set(bool DL, bool N, bool F)
+  def funct_set(self,DL, N, F):
     self.asByte=0x03C
     self.write_cmd()
     
-  def turn_on(bool D, bool C, bool B)
+  def turn_on(self,D, C, B):
     self.asByte=0x00F
     self.write_cmd()
     
-  def write_char(str x)
-    self.asByte= 0x300 + x[1]
-    self.write_cmd()
+  def write_char(self,x):
+    a1 = 0x200
+    for i in x:
+    	self.asByte= a1 + ord(i) 
+    	self.write_cmd()
   
-  def init()
+  def init(self):
     GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
-    GPIO.setup(RS, GPIO.OUT)
-    GPIO.setup(RW, GPIO.OUT)
-    GPIO.setup(E, GPIO.OUT)
-    GPIO.setup(DB0, GPIO.OUT)
-    GPIO.setup(DB1, GPIO.OUT)
-    GPIO.setup(DB2, GPIO.OUT)
-    GPIO.setup(DB3, GPIO.OUT)
-    GPIO.setup(DB4, GPIO.OUT)
-    GPIO.setup(DB5, GPIO.OUT)
-    GPIO.setup(DB6, GPIO.OUT)
-    GPIO.setup(DB7, GPIO.OUT)
+    GPIO.setup(self.RS, GPIO.OUT)
+    GPIO.setup(self.RW, GPIO.OUT)
+    GPIO.setup(self.E, GPIO.OUT)
+    GPIO.setup(self.DB0, GPIO.OUT)
+    GPIO.setup(self.DB1, GPIO.OUT)
+    GPIO.setup(self.DB2, GPIO.OUT)
+    GPIO.setup(self.DB3, GPIO.OUT)
+    GPIO.setup(self.DB4, GPIO.OUT)
+    GPIO.setup(self.DB5, GPIO.OUT)
+    GPIO.setup(self.DB6, GPIO.OUT)
+    GPIO.setup(self.DB7, GPIO.OUT)
     self.clear_dsp()
     self.rtrn_hme()
     self.turn_on(1,1,1)
     self.funct_set(1,1,1)
     
-  def clean()
+  def clean(self):
     self.clear_dsp()
     self.rtrn_hme()
     GPIO.cleanup()
     
-_anonymous_ = ("b")
+##_anonymous_ = ("b")
