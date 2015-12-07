@@ -49,7 +49,27 @@ class lcd_data( ctypes.Union ):
   def printvars(self):
 	print str(self.b.rs) + str(self.b.rw) + str(self.b.db7) + str(self.b.db6) + str(self.b.db5) + str(self.b.db4) + str(self.b.db3) + str(self.b.db2) + str(self.b.db1) + str(self.b.db0)
 
+  def read_cmd(self):
+  	GPIO.output(self.RS,self.b.rs)
+  	GPIO.output(self.RW,self.b.rw)
+  	self.GPIO_read_init()
+  	GPIO.output(self.E,1)
+  	self.b.db0 = GPIO.input(self.DB0)
+  	self.b.db1 = GPIO.input(self.DB1)
+  	self.b.db2 = GPIO.input(self.DB2)
+  	self.b.db3 = GPIO.input(self.DB3)
+  	self.b.db4 = GPIO.input(self.DB4)
+  	self.b.db5 = GPIO.input(self.DB5)
+  	self.b.db6 = GPIO.input(self.DB6)
+  	self.b.db7 = GPIO.input(self.DB7)
+  	GPIO.output(self.E,0)
+  	self.GPIO_write_init()
+  	time.sleep(0.001)
+
   def write_cmd(self):
+  	temp = self.asByte
+  	self.asByte = 0x
+  	
     GPIO.output(self.RS,self.b.rs)
     GPIO.output(self.RW,self.b.rw)
     ##time.sleep(0.01)
@@ -83,19 +103,32 @@ class lcd_data( ctypes.Union ):
     	self.asByte= a1 + ord(i) 
     	self.write_cmd()
   
+  def GPIO_read_init(self):
+  	GPIO.setup(self.DB0, GPIO.IN)
+  	GPIO.setup(self.DB1, GPIO.IN)
+  	GPIO.setup(self.DB2, GPIO.IN)
+  	GPIO.setup(self.DB3, GPIO.IN)
+  	GPIO.setup(self.DB4, GPIO.IN)
+  	GPIO.setup(self.DB5, GPIO.IN)
+  	GPIO.setup(self.DB6, GPIO.IN)
+  	GPIO.setup(self.DB7, GPIO.IN)
+  
+  def GPIO_write_init(self):
+  	GPIO.setup(self.DB0, GPIO.OUT)
+  	GPIO.setup(self.DB1, GPIO.OUT)
+  	GPIO.setup(self.DB2, GPIO.OUT)
+  	GPIO.setup(self.DB3, GPIO.OUT)
+  	GPIO.setup(self.DB4, GPIO.OUT)
+  	GPIO.setup(self.DB5, GPIO.OUT)
+  	GPIO.setup(self.DB6, GPIO.OUT)
+  	GPIO.setup(self.DB7, GPIO.OUT)
+  
   def init(self):
     GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
     GPIO.setup(self.RS, GPIO.OUT)
     GPIO.setup(self.RW, GPIO.OUT)
     GPIO.setup(self.E, GPIO.OUT)
-    GPIO.setup(self.DB0, GPIO.OUT)
-    GPIO.setup(self.DB1, GPIO.OUT)
-    GPIO.setup(self.DB2, GPIO.OUT)
-    GPIO.setup(self.DB3, GPIO.OUT)
-    GPIO.setup(self.DB4, GPIO.OUT)
-    GPIO.setup(self.DB5, GPIO.OUT)
-    GPIO.setup(self.DB6, GPIO.OUT)
-    GPIO.setup(self.DB7, GPIO.OUT)
+    self.GPIO_write_init()
     self.clear_dsp()
     self.rtrn_hme()
     self.turn_on(1,1,1)
