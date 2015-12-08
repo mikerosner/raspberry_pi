@@ -46,6 +46,10 @@ class lcd_data( ctypes.Union ):
   	GPIO.output(self.DB7,self.b.db7)
   
 
+  def copy_pins(self):
+	self.GPIO_read_init()
+		
+
   def printvars(self):
 	print str(self.b.rs) + str(self.b.rw) + str(self.b.db7) + str(self.b.db6) + str(self.b.db5) + str(self.b.db4) + str(self.b.db3) + str(self.b.db2) + str(self.b.db1) + str(self.b.db0)
 
@@ -64,7 +68,7 @@ class lcd_data( ctypes.Union ):
   	self.b.db7 = GPIO.input(self.DB7)
   	GPIO.output(self.E,0)
   	self.GPIO_write_init()
-  	time.sleep(0.001)
+  	##time.sleep(0.001)
 
   def write_cmd(self):
   	x = 1
@@ -82,7 +86,7 @@ class lcd_data( ctypes.Union ):
   	self.lcd_load_db()
   	##time.sleep(0.01)
   	GPIO.output(self.E,0)
-  	time.sleep(0.001)
+  	##time.sleep(0.001)
   	##self.printvars()
   
   def clear_dsp(self):
