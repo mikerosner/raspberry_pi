@@ -67,19 +67,23 @@ class lcd_data( ctypes.Union ):
   	time.sleep(0.001)
 
   def write_cmd(self):
+  	x = 1
   	temp = self.asByte
-  	self.asByte = 0x
-  	
-    GPIO.output(self.RS,self.b.rs)
-    GPIO.output(self.RW,self.b.rw)
-    ##time.sleep(0.01)
-    GPIO.output(self.E,1)
-    ##time.sleep(0.01)
-    self.lcd_load_db()
-    ##time.sleep(0.01)
-    GPIO.output(self.E,0)
-    time.sleep(0.001)
-    ##self.printvars()
+  	while x == 1 :
+  		self.asByte = 0x100
+  		self.read_cmd()
+  		x = self.b.db7
+  	self.asByte = temp
+  	GPIO.output(self.RS,self.b.rs)
+  	GPIO.output(self.RW,self.b.rw)
+  	##time.sleep(0.01)
+  	GPIO.output(self.E,1)
+  	##time.sleep(0.01)
+  	self.lcd_load_db()
+  	##time.sleep(0.01)
+  	GPIO.output(self.E,0)
+  	time.sleep(0.001)
+  	##self.printvars()
   
   def clear_dsp(self):
     self.asByte=0x001
