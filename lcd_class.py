@@ -69,6 +69,7 @@ class lcd_data( ctypes.Union ):
   def printvars(self):
 	print str(self.b.rs) + str(self.b.rw) + str(self.b.db7) + str(self.b.db6) + str(self.b.db5) + str(self.b.db4) + str(self.b.db3) + str(self.b.db2) + str(self.b.db1) + str(self.b.db0)
   
+##tier 1 Functions
   def read_cmd(self):
   	GPIO.output(self.RS,self.b.rs)
   	GPIO.output(self.RW,self.b.rw)
@@ -117,10 +118,6 @@ class lcd_data( ctypes.Union ):
   def turn_on(self,D, C, B):
     self.asByte=0x00F
     self.write_cmd()
-    
-  def get_line(self,line_num):
-  	##implementation tbd
-  	return "not implemented"
   
   def mv_curs(self,addr):
   	##line1 - 0x00; line2 - 0x40
@@ -140,7 +137,11 @@ class lcd_data( ctypes.Union ):
     for i in txt1:
     	self.asByte= a1 + ord(i) 
     	self.write_cmd()
-		
+    	
+  def get_line(self,line_num):
+  	##implementation tbd
+  	return "not implemented"		
+  	
   def init(self):
     GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
     GPIO.setup(self.RS, GPIO.OUT)
@@ -156,5 +157,10 @@ class lcd_data( ctypes.Union ):
     self.clear_dsp()
     self.rtrn_hme()
     GPIO.cleanup()
+    		
+##tier 2 Functions
+	def parse_xml(self,file):
+		##more tbd
+
     
 ##_anonymous_ = ("b")
