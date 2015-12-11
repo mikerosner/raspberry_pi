@@ -11,6 +11,7 @@ lcd.write_string(temp_str,1)
 time.sleep(2)
 lcd.write_string("Second",1)
 time.sleep(2)
+print lcd.get_line(1):
 
 #print hex(0x200 + ord(temp_str[0]))
 
