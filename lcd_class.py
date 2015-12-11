@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO ## Import GPIO library
 import ctypes
 import time
+import xml.etree.ElementTree as ET
 
 c_uint16 = ctypes.c_uint16
 class lcd_data_bits( ctypes.LittleEndianStructure ):
@@ -124,10 +125,10 @@ class lcd_data( ctypes.Union ):
   	self.asByte= 0x80 + addr
   	self.write_cmd()
     
-  def write_string(self,txt1,line_num):
+  def write_string(self,d1,txt1):
     a1 = 0x200
     clr_scrn = "                 "
-    if line_num == 1: addr = 0x00
+    if d1['line'] == 1: addr = 0x00
     else: addr = 0x40
     self.mv_curs(addr)
     for i in clr_scrn:
@@ -157,10 +158,22 @@ class lcd_data( ctypes.Union ):
     self.clear_dsp()
     self.rtrn_hme()
     GPIO.cleanup()
-    		
+  
+  def delay(self, d1, txt1):
+  	##print("sleeping...")
+  	time.sleep(float(txt1))
+  	
 ##tier 2 Functions
 	def parse_xml(self,file):
-		##more tbd
+		tree = ET.parse(file)
+		root = tree.getroot()
 
+		options = {'txt' : write_string,
+           		'delay' : delay,
+		}
+
+		for command in root:
+    			for sub in command:
+        			options[sub.tag](sub.attrib, sub.text)
     
 ##_anonymous_ = ("b")
