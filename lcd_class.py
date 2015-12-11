@@ -140,8 +140,37 @@ class lcd_data( ctypes.Union ):
     	self.write_cmd()
     	
   def get_line(self,line_num):
-  	##implementation tbd
-  	return "not implemented"		
+  	##Move to Home @ line requested
+  	if line_num == 1: addr = 0x00
+  	else: addr = 0x40
+  	self.mv_curs(addr)
+  	##Check Busy signal
+  	while x == 1 :
+  		self.asByte = 0x100
+  		self.read_cmd()
+  		x = self.b.db7
+  	##Switch to read mode
+  	self.GPIO_read_init()
+  	##Read full line of text from Home to end of line -0x00 -> 0x27 or 0x40 -> 0x67 and place in string
+  	self.b.rw = 0
+  	self.b.rs = 0
+  	for x in range(0x00, 0x27):
+  		GPIO.output(self.RS,1)
+  		GPIO.output(self.RW,1)
+  		GPIO.output(self.E,1)
+	  	self.b.db0 = GPIO.input(self.DB0)
+	  	self.b.db1 = GPIO.input(self.DB1)
+	  	self.b.db2 = GPIO.input(self.DB2)
+	  	self.b.db3 = GPIO.input(self.DB3)
+	  	self.b.db4 = GPIO.input(self.DB4)
+	  	self.b.db5 = GPIO.input(self.DB5)
+	  	self.b.db6 = GPIO.input(self.DB6)
+	  	self.b.db7 = GPIO.input(self.DB7)
+	  	str1[x] = self.asByte
+  		GPIO.output(self.E,0)
+  	self.GPIO_write_init()
+  	## Return string
+  	return str1		
   	
   def init(self):
     GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
