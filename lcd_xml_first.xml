@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<lcdrun loop = "yes">
+	<print>
+		<txt line = "1">Hello World</txt>
+		<delay>2</delay>
+		<txt line = "2">Bottom Side</txt>
+		<delay>2</delay>
+		<txt line = "1">Top Side</txt>
+		<delay>2</delay>
+	</print>
+</lcdrun>
+
