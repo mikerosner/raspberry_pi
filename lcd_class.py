@@ -128,7 +128,7 @@ class lcd_data( ctypes.Union ):
   def write_string(self,d1,txt1):
     a1 = 0x200
     clr_scrn = "                 "
-    if d1['line'] == 1: addr = 0x00
+    if d1['line'] == '1': addr = 0x00
     else: addr = 0x40
     self.mv_curs(addr)
     for i in clr_scrn:
@@ -145,7 +145,8 @@ class lcd_data( ctypes.Union ):
   	else: addr = 0x40
   	self.mv_curs(addr)
   	##Check Busy signal
-  	while x == 1 :
+  	x = 1
+	while x == 1 :
   		self.asByte = 0x100
   		self.read_cmd()
   		x = self.b.db7
@@ -154,6 +155,7 @@ class lcd_data( ctypes.Union ):
   	##Read full line of text from Home to end of line -0x00 -> 0x27 or 0x40 -> 0x67 and place in string
   	self.b.rw = 0
   	self.b.rs = 0
+	str1 = list("                                          ")
   	for x in range(0x00, 0x27):
   		GPIO.output(self.RS,1)
   		GPIO.output(self.RW,1)
@@ -166,11 +168,12 @@ class lcd_data( ctypes.Union ):
 	  	self.b.db5 = GPIO.input(self.DB5)
 	  	self.b.db6 = GPIO.input(self.DB6)
 	  	self.b.db7 = GPIO.input(self.DB7)
-	  	str1[x] = self.asByte
+	  	str1[x] = str(unichr(self.asByte))
   		GPIO.output(self.E,0)
+		time.sleep(0.001)
   	self.GPIO_write_init()
   	## Return string
-  	return str1		
+  	return ''.join(str(v) for v in str1)
   	
   def init(self):
     GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
@@ -193,16 +196,16 @@ class lcd_data( ctypes.Union ):
   	time.sleep(float(txt1))
   	
 ##tier 2 Functions
-	def parse_xml(self,file):
-		tree = ET.parse(file)
-		root = tree.getroot()
+  def parse_xml(self,file):
+  	tree = ET.parse(file)
+	root = tree.getroot()
 
-		options = {'txt' : write_string,
-           		'delay' : delay,
-		}
+	options = {'txt' : self.write_string,
+        		'delay' : self.delay,
+	}
 
-		for command in root:
-    			for sub in command:
-        			options[sub.tag](sub.attrib, sub.text)
+	for command in root:
+    		for sub in command:
+        		options[sub.tag](sub.attrib, sub.text)
     
 ##_anonymous_ = ("b")
